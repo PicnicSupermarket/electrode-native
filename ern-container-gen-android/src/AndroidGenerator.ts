@@ -370,22 +370,44 @@ You should replace "${annotationProcessorPrefix}:${dependency}" with "annotation
     const compositeMiniApps = await config.composite.getMiniApps();
     for (const miniApp of compositeMiniApps) {
       const activityFileName = `${miniApp.pascalCaseName}Activity.java`;
+      const fragmentFileName = `${miniApp.pascalCaseName}Fragment.java`;
 
       log.debug(`Creating ${activityFileName}`);
       const pathToMiniAppActivityMustacheTemplate = path.join(
         PATH_TO_TEMPLATES_DIR,
         'MiniAppActivity.mustache',
       );
+
+      const pathToMiniAppFragmentMustacheTemplate = path.join(
+        PATH_TO_TEMPLATES_DIR,
+        'MiniAppFragment.mustache',
+      );
+
       const pathToOutputActivityFile = path.join(
         config.outDir,
         pathLibSrcMainJavaComWalmartlabsErnContainer,
         'miniapps',
         activityFileName,
       );
+
+      const pathToOutputFragmentFile = path.join(
+        config.outDir,
+        pathLibSrcMainJavaComWalmartlabsErnContainer,
+        'miniapps',
+        fragmentFileName,
+      );
+
       await mustacheUtils.mustacheRenderToOutputFileUsingTemplateFile(
         pathToMiniAppActivityMustacheTemplate,
         miniApp,
         pathToOutputActivityFile,
+        partialProxy,
+      );
+
+      await mustacheUtils.mustacheRenderToOutputFileUsingTemplateFile(
+        pathToMiniAppFragmentMustacheTemplate,
+        miniApp,
+        pathToOutputFragmentFile,
         partialProxy,
       );
     }
