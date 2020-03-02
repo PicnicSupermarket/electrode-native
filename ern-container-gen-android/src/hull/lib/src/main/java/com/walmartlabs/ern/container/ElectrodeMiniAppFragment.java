@@ -1,4 +1,4 @@
-package com.picnic.android.widget;
+package com.walmartlabs.ern.container;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -50,8 +50,10 @@ public class ElectrodeMiniAppFragment extends Fragment { //implements ElectrodeR
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
+        view.unmountReactApplication();
+        view = null;
         mReactActivityDelegate.onDestroy();
     }
 
