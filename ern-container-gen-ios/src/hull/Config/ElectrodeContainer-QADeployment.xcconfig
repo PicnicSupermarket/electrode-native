@@ -38,3 +38,7 @@ STRIP_STYLE = debugging
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG
 SWIFT_OPTIMIZATION_LEVEL = -Owholemodule
 SWIFT_VERSION = 4.0
+<<<<<<< HEAD
+=======
+IPHONEOS_DEPLOYMENT_TARGET = 9.0
+>>>>>>> 52a6f073... Lower iOS deployment target to iOS 9
