@@ -1,6 +1,7 @@
 import { newHashSet } from './java/javaUtil'
 
 export default class CodegenModel {
+  public enums = []
   public vars = []
   public requiredVars = []
   public optionalVars = []

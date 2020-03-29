@@ -2591,6 +2591,7 @@ Renamed to auto-generated operationId: ${operationId}`
 
       m.hasRequired = m.hasRequired || cp.required
       if (cp.isEnum) {
+        m.enums.push(cp)
         m.hasEnums = true
       }
       if (!cp.isReadOnly) {
