@@ -12,7 +12,7 @@
     @objc public enum {{datatypeWithEnum}}: Int, RawRepresentable { 
         {{#allowableValues}}
         {{#values}}
-        case {{^isString}}value{{/isString}}{{enum}}
+        case {{^isString}}option{{/isString}}{{enum}}
         {{/values}}
         case none
         
@@ -21,7 +21,7 @@
         public var rawValue: RawValue {
             switch self {
                 {{#values}}
-                case .{{^isString}}value{{/isString}}{{enum}}:
+                case .{{^isString}}option{{/isString}}{{enum}}:
                     return {{#isString}}"{{raw}}"{{/isString}}{{^isString}}{{raw}}{{/isString}}
                 {{/values}}
                 case .none:
@@ -33,7 +33,7 @@
             switch rawValue {
                 {{#values}}
                 case {{#isString}}"{{raw}}"{{/isString}}{{^isString}}{{raw}}{{/isString}}:
-                    self = .{{^isString}}value{{/isString}}{{enum}}
+                    self = .{{^isString}}option{{/isString}}{{enum}}
                 {{/values}}
                 default:
                     return nil
@@ -49,10 +49,10 @@
      {{{description}}}
      */
     {{/description}}
-    @objc public let {{name}}: {{{datatypeWithEnum}}}{{^required}}?{{/required}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}
+    @objc public let {{name}}: {{{datatypeWithEnum}}}{{^required}}{{^isEnum}}?{{/isEnum}}{{/required}}{{#defaultValue}} = {{{defaultValue}}}{{/defaultValue}}
     {{/vars}}
 
-    @objc public init({{#allVars}}{{^-first}}, {{/-first}}{{name}}: {{#isEnum}}{{datatypeWithEnum}}{{/isEnum}}{{^isEnum}}{{datatype}}{{/isEnum}}{{^required}}?{{/required}}{{/allVars}}) {
+    @objc public init({{#allVars}}{{^-first}}, {{/-first}}{{name}}: {{datatypeWithEnum}}{{^required}}{{^isEnum}}?{{/isEnum}}{{/required}}{{/allVars}}) {
         {{#allVars}}
         self.{{name}} = {{name}}
         {{/allVars}}
@@ -64,7 +64,7 @@
         self.{{name}} = {{#isEnum}}.none{{/isEnum}}{{^isEnum}}{{datatype}}(){{/isEnum}}
         {{/requiredVars}}
         {{#optionalVars}}
-        self.{{name}} = nil
+        self.{{name}} = {{#isEnum}}.none{{/isEnum}}{{^isEnum}}nil{{/isEnum}}
         {{/optionalVars}}
         super.init()
     }
@@ -103,9 +103,12 @@
         dict["{{name}}"] = self.{{name}}{{#isEnum}}.rawValue{{/isEnum}}{{^isPrimitiveType}}{{#isNotContainer}}.toDictionary(){{/isNotContainer}}{{^isNotContainer}}.map{$0.toDictionary()}{{/isNotContainer}}{{/isPrimitiveType}}
         {{/requiredVars}}
         {{#optionalVars}}
-        if let nonNull{{nameInCamelCase}} = self.{{name}} {
+        {{^isEnum}}if let nonNull{{nameInCamelCase}} = self.{{name}} {
                 dict["{{name}}"] = nonNull{{nameInCamelCase}}{{^isPrimitiveType}}{{#isNotContainer}}.toDictionary(){{/isNotContainer}}{{^isNotContainer}}.map{$0.toDictionary()}{{/isNotContainer}}{{/isPrimitiveType}}
-        }
+        }{{/isEnum}}
+        {{#isEnum}}if self.{{name}} != .none {
+                dict["{{name}}"] = self.{{name}}.rawValue
+        }{{/isEnum}}
         {{/optionalVars}}
         return dict as NSDictionary
     }
