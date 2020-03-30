@@ -31,8 +31,41 @@ import static com.walmartlabs.electrode.reactnative.bridge.util.BridgeArguments.
 **/{{/description}}
 public class {{classname}} implements Parcelable, Bridgeable {
 
+    {{#enums}}
+    enum {{datatypeWithEnum}} { 
+        {{#allowableValues}}
+        {{#values}}
+        {{^isString}}option{{/isString}}{{.}}({{#isString}}"{{.}}"{{/isString}}{{^isString}}{{.}}{{/isString}}),
+        {{/values}}
+        none({{#isString}}"-1"{{/isString}}{{^isString}}-1{{/isString}});
+
+        private final {{datatype}} value;
+
+        {{datatypeWithEnum}}({{datatype}} value) {
+            this.value = value;
+        }
+
+        public static {{datatypeWithEnum}} from(final {{datatype}} rawValue) {
+            switch(rawValue) {
+                {{#values}}
+                case {{#isString}}"{{.}}"{{/isString}}{{^isString}}{{.}}{{/isString}}:
+                    return {{^isString}}option{{/isString}}{{.}};
+                {{/values}}
+                default:
+                    return none;
+            }
+        }
+
+        {{datatype}} getValue() {
+            return value;
+        }
+        {{/allowableValues}}
+    }
+
+    {{/enums}}
+
     {{#vars}}
-    private {{{datatype}}} {{name}};
+    private {{{datatypeWithEnum}}} {{name}};
     {{/vars}}
 
     private {{classname}}() {}
@@ -82,10 +115,10 @@ public class {{classname}} implements Parcelable, Bridgeable {
         {{/isListContainer}}
         {{^isListContainer}}
         {{#isString}}
-        this.{{name}} = bundle.getString("{{name}}");
+        this.{{name}} = bundle.getString("{{name}}") {{#isEnum}}== null ? null : {{datatypeWithEnum}}.from(bundle.getString("{{name}}")){{/isEnum}};
         {{/isString}}
         {{#isInteger}}
-        this.{{name}} = getNumberValue(bundle, "{{name}}") == null ? null : getNumberValue(bundle, "{{name}}").intValue();
+        this.{{name}} = getNumberValue(bundle, "{{name}}") == null ? null : {{#isEnum}}{{datatypeWithEnum}}{{/isEnum}}.from(getNumberValue(bundle, "{{name}}").intValue(){{#isEnum}}){{/isEnum}};
         {{/isInteger}}
         {{#isBoolean}}
         this.{{name}} = bundle.containsKey("{{name}}") ? bundle.getBoolean("{{name}}") : null;
@@ -125,7 +158,7 @@ public class {{classname}} implements Parcelable, Bridgeable {
     /**
     * {{description}}
     *
-    * @return {{{datatype}}}
+    * @return {{{datatypeWithEnum}}}
     */
     {{/description}}
     {{#required}}
@@ -134,7 +167,7 @@ public class {{classname}} implements Parcelable, Bridgeable {
     {{^required}}
     @Nullable
     {{/required}}
-    public {{{datatype}}} {{getter}}() {
+    public {{{datatypeWithEnum}}} {{getter}}() {
         return {{name}};
     }
 
@@ -160,10 +193,10 @@ public class {{classname}} implements Parcelable, Bridgeable {
         {{/isListContainer}}
         {{^isListContainer}}
         {{#isString}}
-        bundle.putString("{{name}}", this.{{name}});
+        bundle.putString("{{name}}", this.{{name}}{{#isEnum}}.getValue(){{/isEnum}});
         {{/isString}}
         {{#isInteger}}
-        bundle.putInt("{{name}}", this.{{name}});
+        bundle.putInt("{{name}}", this.{{name}}{{#isEnum}}.getValue(){{/isEnum}});
         {{/isInteger}}
         {{#isLong}}
         bundle.putLong("{{name}}", this.{{name}});
@@ -190,13 +223,13 @@ public class {{classname}} implements Parcelable, Bridgeable {
         {{/isListContainer}}
         {{^isListContainer}}
         {{#isString}}
-        if({{name}} != null) {
-            bundle.putString("{{name}}", this.{{name}} );
+        if(this.{{name}} != null{{#isEnum}} && this.{{name}} != {{datatypeWithEnum}}.none{{/isEnum}}) {
+            bundle.putString("{{name}}", this.{{name}}{{#isEnum}}.getValue(){{/isEnum}});
         }
         {{/isString}}
         {{#isInteger}}
-        if(this.{{name}} != null) {
-            bundle.putInt("{{name}}", this.{{name}});
+        if(this.{{name}} != null{{#isEnum}} && this.{{name}} != {{datatypeWithEnum}}.none{{/isEnum}}) {
+            bundle.putInt("{{name}}", this.{{name}}{{#isEnum}}.getValue(){{/isEnum}});
         }
         {{/isInteger}}
         {{#isLong}}
@@ -255,13 +288,13 @@ public class {{classname}} implements Parcelable, Bridgeable {
 
     public static class Builder {
         {{#requiredVars}}
-        private final {{{datatype}}} {{name}};
+        private final {{{datatypeWithEnum}}} {{name}};
         {{/requiredVars}}
         {{#optionalVars}}
-        private {{{datatype}}} {{name}};
+        private {{{datatypeWithEnum}}} {{name}};
         {{/optionalVars}}
 
-        public Builder({{#requiredVars}}@NonNull {{{datatype}}} {{name}}{{^-last}}, {{/-last}}{{/requiredVars}}) {
+        public Builder({{#requiredVars}}@NonNull {{{datatypeWithEnum}}} {{name}}{{^-last}}, {{/-last}}{{/requiredVars}}) {
         {{#requiredVars}}
             this.{{name}} = {{name}};
         {{/requiredVars}}
@@ -269,7 +302,7 @@ public class {{classname}} implements Parcelable, Bridgeable {
 
         {{#optionalVars}}
         @NonNull
-        public Builder {{name}}(@Nullable {{{datatype}}} {{name}}) {
+        public Builder {{name}}(@Nullable {{{datatypeWithEnum}}} {{name}}) {
             this.{{name}} = {{name}};
             return this;
         }
