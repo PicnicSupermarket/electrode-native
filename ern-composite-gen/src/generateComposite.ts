@@ -148,8 +148,8 @@ async function generateFullComposite(
 
   shell.pushd(outDir);
 
-  const remoteMiniapps = miniApps.filter((p) => !p.isFilePath);
-  const localMiniApps = miniApps.filter((p) => p.isFilePath);
+  const remoteMiniapps = miniApps;
+  const localMiniApps: PackagePath[] = [];
   const localMiniAppsPaths = localMiniApps.map((m) => m.basePath);
   const extraNodeModules: { [pkg: string]: string } = {};
 
