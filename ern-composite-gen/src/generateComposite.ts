@@ -151,8 +151,8 @@ async function generateFullComposite(
 
   shell.pushd(outDir);
 
-  const remoteMiniapps = miniApps.filter((p) => !p.isFilePath);
-  const localMiniApps = miniApps.filter((p) => p.isFilePath);
+  const remoteMiniapps = miniApps;
+  const localMiniApps: PackagePath[] = [];
   const localMiniAppsPaths = localMiniApps.map((m) => m.basePath);
   // Explicitly add react as an extra node module in metro config
   // Because it's not a native module, it will not be auto added
