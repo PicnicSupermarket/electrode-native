@@ -1,6 +1,6 @@
 {
   "name": "ern-local-cli",
-  "version": "0.44.0-p",
+  "version": "0.44.0-picnic",
   "description": "Electrode Native Local CLI",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -40,20 +40,20 @@
     "chalk": "^2.4.1",
     "cli-table": "^0.3.1",
     "dir-compare": "^1.4.0",
-    "ern-api-gen": "^0.44.0-p",
-    "ern-api-impl-gen": "^0.44.0-p",
-    "ern-cauldron-api": "^0.44.0-p",
-    "ern-composite-gen": "^0.44.0-p",
-    "ern-container-gen": "^0.44.0-p",
-    "ern-container-gen-android": "^0.44.0-p",
-    "ern-container-gen-ios": "^0.44.0-p",
-    "ern-container-publisher": "^0.44.0-p",
-    "ern-container-transformer": "^0.44.0-p",
-    "ern-core": "^0.44.0-p",
-    "ern-orchestrator": "^0.44.0-p",
-    "ern-runner-gen": "^0.44.0-p",
-    "ern-runner-gen-android": "^0.44.0-p",
-    "ern-runner-gen-ios": "^0.44.0-p",
+    "ern-api-gen": "^0.44.0-picnic",
+    "ern-api-impl-gen": "^0.44.0-picnic",
+    "ern-cauldron-api": "^0.44.0-picnic",
+    "ern-composite-gen": "^0.44.0-picnic",
+    "ern-container-gen": "^0.44.0-picnic",
+    "ern-container-gen-android": "^0.44.0-picnic",
+    "ern-container-gen-ios": "^0.44.0-picnic",
+    "ern-container-publisher": "^0.44.0-picnic",
+    "ern-container-transformer": "^0.44.0-picnic",
+    "ern-core": "^0.44.0-picnic",
+    "ern-orchestrator": "^0.44.0-picnic",
+    "ern-runner-gen": "^0.44.0-picnic",
+    "ern-runner-gen-android": "^0.44.0-picnic",
+    "ern-runner-gen-ios": "^0.44.0-picnic",
     "fast-levenshtein": "^2.0.6",
     "fs-extra": "^8.1.0",
     "fs-readdir-recursive": "^1.1.0",
@@ -71,7 +71,7 @@
     "yazl": "^2.5.1"
   },
   "devDependencies": {
-    "ern-util-dev": "^0.44.0-p"
+    "ern-util-dev": "^0.44.0-picnic"
   },
   "engines": {
     "node": ">=10"
