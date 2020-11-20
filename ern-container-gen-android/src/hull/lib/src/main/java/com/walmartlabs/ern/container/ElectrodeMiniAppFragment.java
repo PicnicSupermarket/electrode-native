@@ -1,25 +1,17 @@
 package com.walmartlabs.ern.container;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.react.ReactRootView;
-import com.walmartlabs.ern.container.ElectrodeReactActivityDelegate;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
-public class ElectrodeMiniAppFragment extends Fragment { //implements ElectrodeReactActivityDelegate.BackKeyHandler, PermissionAwareActivity {
-
+public abstract class ElectrodeMiniAppFragment extends Fragment {
     private static final String INITIAL_PROPS = "props";
-    private ElectrodeReactActivityDelegate mReactActivityDelegate;
-    private ReactRootView view;
+    private ElectrodeReactActivityListener mElectrodeReactActivityListener;
 
     public void addInitialProps(@NonNull Bundle bundle) {
         Bundle args = new Bundle();
@@ -27,39 +19,29 @@ public class ElectrodeMiniAppFragment extends Fragment { //implements ElectrodeR
         setArguments(args);
     }
 
-    public static ElectrodeMiniAppFragment newInstance(Bundle initialProps) {
-        ElectrodeMiniAppFragment fragment = new ElectrodeMiniAppFragment();
-
-        return fragment;
-    }
-
     protected String getMiniAppName() {
         return null;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         Bundle initialProps = getArguments().getBundle(INITIAL_PROPS);
-        view = mReactActivityDelegate.createReactRootView(getMiniAppName(), initialProps);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return view;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        view.unmountReactApplication();
-        view = null;
-        mReactActivityDelegate.onDestroy();
+        if (this.getActivity() != null && !this.getActivity().isFinishing()) {
+            return mElectrodeReactActivityListener.getElectrodeDelegate().createReactRootView(getMiniAppName(), initialProps);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mReactActivityDelegate = new ElectrodeReactActivityDelegate(getActivity());
+        if (context instanceof ElectrodeReactActivityListener) {
+            mElectrodeReactActivityListener = (ElectrodeReactActivityListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement ElectrodeReactActivityListener");
+        }
     }
-}
+} 
