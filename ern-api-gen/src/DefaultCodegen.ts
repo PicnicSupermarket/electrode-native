@@ -1,3 +1,4 @@
+import { ObjectProperty } from './models/properties/ObjectProperty';
 /* tslint:disable:variable-name */
 import ExampleGenerator from './examples/ExampleGenerator';
 import CliOption from './CliOption';
@@ -210,7 +211,7 @@ export default class DefaultCodegen {
     ['short', 'Short'],
     ['char', 'String'],
     ['double', 'Double'],
-    ['object', 'Object'],
+    ['object', 'Bundle'],
     ['integer', 'Integer'],
     ['ByteArray', 'byte[]'],
     ['binary', 'byte[]'],
@@ -1504,6 +1505,9 @@ export default class DefaultCodegen {
       property.isDate = true;
     } else if (p instanceof DateTimeProperty) {
       property.isDateTime = true;
+    } else if (p instanceof ObjectProperty) {
+      property.isObject = true;
+      property.isPrimitive = true;
     }
     if (p.getEnum() != null) {
       const _enum = p.getEnum();

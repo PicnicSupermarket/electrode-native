@@ -37,7 +37,7 @@ export default class AndroidClientCodegen extends DefaultCodegen {
     'Long',
     'Float',
     'byte[]',
-    'Object',
+    'Bundle',
   );
   public __apiPackage = 'io.swagger.client.api';
   public __modelPackage = 'io.swagger.client.model';
