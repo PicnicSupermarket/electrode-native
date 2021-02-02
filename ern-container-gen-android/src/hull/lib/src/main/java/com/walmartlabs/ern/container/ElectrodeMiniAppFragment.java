@@ -7,11 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.facebook.react.ReactRootView;
 
 public abstract class ElectrodeMiniAppFragment extends Fragment {
     private static final String INITIAL_PROPS = "props";
     private ElectrodeReactActivityListener mElectrodeReactActivityListener;
+
+    @Nullable
+    private View mMiniAppView;
 
     public void addInitialProps(@NonNull Bundle bundle) {
         Bundle args = new Bundle();
@@ -26,12 +32,14 @@ public abstract class ElectrodeMiniAppFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Bundle initialProps = getArguments().getBundle(INITIAL_PROPS);
-        if (this.getActivity() != null && !this.getActivity().isFinishing()) {
-            return mElectrodeReactActivityListener.getElectrodeDelegate().createReactRootView(getMiniAppName(), initialProps);
-        } else {
-            return null;
+        if (mMiniAppView == null) {
+            Bundle initialProps = getArguments().getBundle(INITIAL_PROPS);
+            if (this.getActivity() != null && !this.getActivity().isFinishing()) {
+                mMiniAppView = mElectrodeReactActivityListener.getElectrodeDelegate()
+                        .createReactRootView(getMiniAppName(), initialProps);
+            }
         }
+        return mMiniAppView;
     }
 
     @Override
@@ -44,4 +52,14 @@ public abstract class ElectrodeMiniAppFragment extends Fragment {
                     + " must implement ElectrodeReactActivityListener");
         }
     }
-} 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mMiniAppView instanceof ReactRootView) {
+            mElectrodeReactActivityListener.getElectrodeDelegate()
+                    .removeMiniAppView(getMiniAppName(), (ReactRootView) mMiniAppView);
+            mMiniAppView = null;
+        }
+    }
+}
